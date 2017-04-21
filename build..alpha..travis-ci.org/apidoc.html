@@ -1,0 +1,177 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="http://github.com/konitter/gulp-styledocco"
+
+    >gulp-styledocco (v0.0.3)</a>
+</h1>
+<h4>StyleDocco plugin for gulp.</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.gulp-styledocco">module gulp-styledocco</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-styledocco.gulp-styledocco">
+            function <span class="apidocSignatureSpan"></span>gulp-styledocco
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.gulp-styledocco" id="apidoc.module.gulp-styledocco">module gulp-styledocco</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-styledocco.gulp-styledocco" id="apidoc.element.gulp-styledocco.gulp-styledocco">
+        function <span class="apidocSignatureSpan"></span>gulp-styledocco
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">gulp-styledocco = function (options) {
+  &#x27;use strict&#x27;;
+
+  var firstFile = null;
+  var opts = defaults(options || {}, {
+    out: &#x27;docs&#x27;,
+    name: &#x27;Styledocco&#x27;,
+    include: null,
+    preprocessor: null
+  });
+  var count = 0;
+
+  function transform (file, encoding, cb) {
+
+    if (file.isNull()) {
+      this.push(file);
+      return cb();
+    }
+
+    if (file.isStream()) {
+      this.emit(&#x27;error&#x27;, new PluginError(PLUGIN_NAME, &#x27;Streaming not supported&#x27;));
+      return cb();
+    }
+
+    count++;
+
+    if (!firstFile) {
+      firstFile = file;
+    }
+
+    cb();
+  }
+
+  function flush (cb) {
+
+    var bin = &#x27;styledocco &#x27;;
+    var args = [];
+
+    args.push(&#x27;--out&#x27;, opts.out);
+    if (opts.name !== null) {
+      args.push(&#x27;--name&#x27;, &#x27;&#x22;&#x27; + opts.name + &#x27;&#x22;&#x27;);
+    }
+    if (opts.preprocessor !== null) {
+      args.push(&#x27;--preprocessor&#x27;, opts.preprocessor);
+    }
+    if (opts.include !== null) {
+      opts.include.forEach(function (value) {
+        return args.push(&#x27;--include&#x27;, value);
+      });
+    }
+    if (opts.verbose) {
+      args.push(&#x27;--verbose&#x27;, opts.verbose);
+    }
+    if (opts[&#x27;no-minify&#x27;]) {
+      args.push(&#x27;--no-minify&#x27;);
+    }
+
+    if (count &#x3e; 1) {
+      args.push(firstFile.base);
+    } else {
+      args.push(firstFile.path);
+    }
+
+    exec(bin + args.join(&#x27; &#x27;), function (error, stdout, stderr) {
+      if (stderr) {
+        gutil.log(stderr);
+      }
+      if (stdout) {
+        stdout = stdout.trim();
+        gutil.log(stdout);
+      }
+      cb(error);
+    });
+
+  }
+
+  return through.obj(transform, flush);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
